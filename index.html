@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+  <title>ແບບຟອມ FTTH</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+    :root {
+      --red: #c0392b;
+      --red2: #e74c3c;
+      --red-light: #fdecea;
+      --gray: #f5f5f5;
+      --border: #e8e8e8;
+      --text: #222;
+      --sub: #666;
+    }
+
+    body {
+      font-family: 'Noto Sans Lao', sans-serif;
+      background: var(--gray);
+      color: var(--text);
+      padding: 16px;
+      min-height: 100vh;
+    }
+
+    .wrap { max-width: 600px; margin: 0 auto; }
+
+    /* Header */
+    .hdr {
+      background: linear-gradient(135deg, var(--red), var(--red2));
+      color: #fff;
+      border-radius: 18px;
+      padding: 26px 20px 22px;
+      text-align: center;
+      margin-bottom: 16px;
+      box-shadow: 0 6px 24px rgba(192,57,43,.28);
+    }
+    .hdr .ico { font-size: 38px; margin-bottom: 8px; }
+    .hdr h1 { font-size: clamp(15px,4vw,19px); font-weight: 700; margin-bottom: 3px; }
+    .hdr p { font-size: clamp(11px,3vw,13px); opacity: .82; }
+
+    /* Card */
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 18px 16px;
+      margin-bottom: 14px;
+      box-shadow: 0 2px 10px rgba(0,0,0,.06);
+      border: 1px solid #f0f0f0;
+    }
+
+    .sec {
+      font-size: clamp(13px,3.5vw,15px);
+      font-weight: 700;
+      color: var(--red);
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--red-light);
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .fg { margin-bottom: 13px; }
+    .fg:last-child { margin-bottom: 0; }
+
+    .fg > label, label.lbl {
+      display: block;
+      font-size: clamp(12px,3vw,13px);
+      font-weight: 600;
+      color: #444;
+      margin-bottom: 5px;
+    }
+
+    .req { color: var(--red2); margin-left: 2px; }
+
+    input[type=text], input[type=tel], input[type=date],
+    select, textarea {
+      width: 100%;
+      padding: 11px 13px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-size: clamp(13px,3.5vw,15px);
+      font-family: 'Noto Sans Lao', sans-serif;
+      color: var(--text);
+      background: #fafafa;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23999' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      padding-right: 36px;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--red2);
+      box-shadow: 0 0 0 3px rgba(231,76,60,.10);
+      background: #fff;
+    }
+
+    input[readonly] { background: #f2f2f2; color: #888; cursor: not-allowed; }
+
+    input[type=date] { color: var(--text); }
+
+    textarea { resize: vertical; min-height: 80px; }
+
+    .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+    /* GPS */
+    .gps-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+
+    .gps-btn {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, var(--red), var(--red2));
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: clamp(13px,3.5vw,14px);
+      font-family: 'Noto Sans Lao', sans-serif;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      box-shadow: 0 2px 10px rgba(192,57,43,.22);
+      touch-action: manipulation;
+      transition: opacity .2s;
+    }
+    .gps-btn:active { opacity: .82; }
+    .gps-btn:disabled { opacity: .5; cursor: not-allowed; }
+
+    .gps-info {
+      font-size: clamp(11px,2.8vw,13px);
+      min-height: 18px;
+      margin-top: 6px;
+      color: #999;
+    }
+    .gps-info.ok { color: #27ae60; }
+    .gps-info.err { color: var(--red2); }
+
+    /* Option pills */
+    .pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+
+    .pills label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: clamp(13px,3.5vw,14px);
+      font-weight: 500;
+      background: #fafafa;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 14px;
+      cursor: pointer;
+      user-select: none;
+      touch-action: manipulation;
+      transition: background .15s, border-color .15s, color .15s;
+      margin: 0;
+    }
+
+    .pills input { display: none; }
+
+    .pills label.on {
+      background: var(--red-light);
+      border-color: var(--red2);
+      color: var(--red);
+      font-weight: 700;
+    }
+
+    /* Submit */
+    .sub-btn {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, var(--red), var(--red2));
+      color: #fff;
+      border: none;
+      border-radius: 14px;
+      font-size: clamp(15px,4vw,17px);
+      font-family: 'Noto Sans Lao', sans-serif;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 18px rgba(192,57,43,.32);
+      touch-action: manipulation;
+      transition: opacity .2s;
+    }
+    .sub-btn:active { opacity: .88; }
+    .sub-btn:disabled { opacity: .55; cursor: not-allowed; }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spin {
+      width: 18px; height: 18px;
+      border: 2.5px solid rgba(255,255,255,.35);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      display: none;
+    }
+    .spin.on { display: inline-block; }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      top: 14px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-120px);
+      background: #333;
+      color: #fff;
+      padding: 11px 22px;
+      border-radius: 50px;
+      font-size: clamp(13px,3.5vw,14px);
+      font-family: 'Noto Sans Lao', sans-serif;
+      box-shadow: 0 4px 20px rgba(0,0,0,.18);
+      transition: transform .3s ease;
+      z-index: 9999;
+      max-width: 90vw;
+      text-align: center;
+      white-space: nowrap;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+    .toast.ok { background: #27ae60; }
+    .toast.err { background: var(--red2); }
+
+    @media(min-width:480px){ body{ padding: 24px 20px; } }
+    @media(min-width:640px){ body{ padding: 32px 20px; } }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hdr">
+    <div class="ico">📡</div>
+    <h1>ແບບຟອມເກັບກຳຂໍ້ມູນລູກຄ້າ FTTH</h1>
+    <p>ແຂວງ ອຸດົມໄຊ — LTC</p>
+  </div>
+
+  <form id="form">
+
+    <!-- ຂໍ້ມູນພື້ນຖານ -->
+    <div class="card">
+      <div class="sec">📋 ຂໍ້ມູນພື້ນຖານ</div>
+
+      <div class="fg">
+        <label class="lbl">ເລືອກເມືອງ <span class="req">*</span></label>
+        <select id="city" required>
+          <option value="">-- ເລືອກເມືອງ --</option>
+          <option value="ໄຊ">ເມືອງ ໄຊ (Xay)</option>
+          <option value="ຫຼາ">ເມືອງ ຫຼາ (La)</option>
+          <option value="ນາໝໍ້">ເມືອງ ນາໝໍ້ (Namor)</option>
+          <option value="ແບງ">ເມືອງ ແບງ (Beng)</option>
+          <option value="ຮຸນ">ເມືອງ ຮຸນ (Houn)</option>
+          <option value="ປາກແບງ">ເມືອງ ປາກແບງ (ParkBeng)</option>
+          <option value="ງາ">ເມືອງ ງາ (Nga)</option>
+        </select>
+      </div>
+
+      <div class="fg">
+        <label class="lbl">ຊື່ ແລະ ນາມສະກຸນ <span class="req">*</span></label>
+        <input type="text" id="name" placeholder="ກະລຸນາໃສ່ຊື່-ນາມສະກຸນ" required/>
+      </div>
+
+      <div class="fg">
+        <label class="lbl">ບ້ານ <span class="req">*</span></label>
+        <input type="text" id="village" placeholder="ຊື່ບ້ານ" required/>
+      </div>
+
+      <div class="row2">
+        <div class="fg">
+          <label class="lbl">ເມືອງ</label>
+          <input type="text" id="cityDisp" readonly placeholder="ອັດຕະໂນມັດ"/>
+        </div>
+        <div class="fg">
+          <label class="lbl">ແຂວງ</label>
+          <input type="text" value="ອຸດົມໄຊ" readonly/>
+        </div>
+      </div>
+
+      <div class="fg">
+        <label class="lbl">ເບີຕິດຕໍ່ <span class="req">*</span></label>
+        <input type="tel" id="phone" placeholder="020 XXXXXXXX" required/>
+      </div>
+    </div>
+
+    <!-- GPS -->
+    <div class="card">
+      <div class="sec">📍 ພິກັດ GPS</div>
+      <div class="gps-grid">
+        <div class="fg" style="margin:0">
+          <label class="lbl">Lat</label>
+          <input type="text" id="lat" placeholder="20.XXXXXX"/>
+        </div>
+        <div class="fg" style="margin:0">
+          <label class="lbl">Long</label>
+          <input type="text" id="lng" placeholder="101.XXXXXX"/>
+        </div>
+      </div>
+      <button type="button" class="gps-btn" id="gpsBtn">
+        📌 ປັກໝຸດຕຳແໜ່ງປັດຈຸບັນ
+      </button>
+      <div class="gps-info" id="gpsInfo"></div>
+    </div>
+
+    <!-- User -->
+    <div class="card">
+      <div class="sec">👤 User</div>
+      <div class="fg">
+        <label class="lbl">ລະຫັດພະນັກງານ <span class="req">*</span></label>
+        <input type="text" id="user" placeholder="ຕົວຢ່າງ: 81fh123456" required/>
+      </div>
+    </div>
+
+    <!-- ເຄືອຂ່າຍ -->
+    <div class="card">
+      <div class="sec">📶 ນຳໃຊ້ເຄືອຂ່າຍ <span style="font-weight:400;font-size:12px;color:#999">(ເລືອກໄດ້ຫຼາຍ)</span></div>
+      <div class="pills" id="netPills">
+        <label><input type="checkbox" value="Unitel"><span>Unitel</span></label>
+        <label><input type="checkbox" value="ETL"><span>ETL</span></label>
+        <label><input type="checkbox" value="Best"><span>Best</span></label>
+        <label><input type="checkbox" value="LTC"><span>LTC</span></label>
+        <label><input type="checkbox" value="ບໍ່ມີ"><span>ບໍ່ມີ</span></label>
+      </div>
+    </div>
+
+    <!-- ຜົນປະຕິບັດ -->
+    <div class="card">
+      <div class="sec">📊 ຜົນປະຕິບັດ</div>
+
+      <div class="fg">
+        <label class="lbl">ຜົນປະຕິບັດ <span class="req">*</span></label>
+        <div class="pills" id="resPills">
+          <label><input type="radio" name="res" value="ສົນໃຈ"><span>ສົນໃຈ</span></label>
+          <label><input type="radio" name="res" value="ບໍ່ສົນໃຈ"><span>ບໍ່ສົນໃຈ</span></label>
+          <label><input type="radio" name="res" value="ລໍຖ້າຄຳຕອບ"><span>ລໍຖ້າຄຳຕອບ</span></label>
+        </div>
+      </div>
+
+      <div class="fg">
+        <label class="lbl">ວັນທີ່ໝົດແພັກເກດ</label>
+        <input type="date" id="expiry"/>
+      </div>
+
+      <div class="fg">
+        <label class="lbl">ຂໍ້ມູນການໃຊ້ງານຂອງລູກຄ້າ</label>
+        <input type="text" id="usage" placeholder="ລາຍລະອຽດການໃຊ້ງານ"/>
+      </div>
+
+      <div class="fg">
+        <label class="lbl">ໝາຍເຫດ</label>
+        <textarea id="note" placeholder="ໝາຍເຫດເພີ່ມເຕີມ..."></textarea>
+      </div>
+    </div>
+
+    <button type="submit" class="sub-btn" id="subBtn">
+      <span class="spin" id="spin"></span>
+      ສົ່ງຂໍ້ມູນ
+    </button>
+
+  </form>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  var API = "https://script.google.com/macros/s/AKfycbw4TzX5KCCs5Sm_zOhzMR69CYGdGu7Xd3DCpkR6aHPuL-nNK9Yyr2Bi5q68-rujhf4fOA/exec";
+
+  // City sync
+  document.getElementById("city").addEventListener("change", function() {
+    document.getElementById("cityDisp").value = this.value;
+  });
+
+  // GPS
+  document.getElementById("gpsBtn").addEventListener("click", function() {
+    var btn = this;
+    var info = document.getElementById("gpsInfo");
+    if (!navigator.geolocation) {
+      info.textContent = "❌ Browser ບໍ່ຮອງຮັບ GPS";
+      info.className = "gps-info err";
+      return;
+    }
+    btn.disabled = true;
+    btn.textContent = "⏳ ກຳລັງຫາຕຳແໜ່ງ...";
+    info.textContent = "";
+    info.className = "gps-info";
+
+    navigator.geolocation.getCurrentPosition(
+      function(p) {
+        var lat = p.coords.latitude.toFixed(6);
+        var lng = p.coords.longitude.toFixed(6);
+        document.getElementById("lat").value = lat;
+        document.getElementById("lng").value = lng;
+        info.textContent = "✅ " + lat + ", " + lng;
+        info.className = "gps-info ok";
+        btn.disabled = false;
+        btn.textContent = "📌 ປັກໝຸດຕຳແໜ່ງປັດຈຸບັນ";
+      },
+      function(e) {
+        var m = "❌ ດຶງ GPS ບໍ່ສຳເລັດ";
+        if (e.code === 1) m = "❌ ກະລຸນາອະນຸຍາດ GPS ໃນ Browser";
+        if (e.code === 2) m = "❌ ບໍ່ພົບສັນຍານ GPS";
+        if (e.code === 3) m = "❌ GPS timeout — ລອງໃໝ່";
+        info.textContent = m;
+        info.className = "gps-info err";
+        btn.disabled = false;
+        btn.textContent = "📌 ປັກໝຸດຕຳແໜ່ງປັດຈຸບັນ";
+      },
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+    );
+  });
+
+  // Checkbox pills
+  document.querySelectorAll("#netPills input[type=checkbox]").forEach(function(inp) {
+    inp.addEventListener("change", function() {
+      this.closest("label").classList.toggle("on", this.checked);
+    });
+  });
+
+  // Radio pills
+  document.querySelectorAll("#resPills input[type=radio]").forEach(function(inp) {
+    inp.addEventListener("change", function() {
+      document.querySelectorAll("#resPills label").forEach(function(l){ l.classList.remove("on"); });
+      if (this.checked) this.closest("label").classList.add("on");
+    });
+  });
+
+  // Toast
+  function toast(msg, type) {
+    var t = document.getElementById("toast");
+    t.textContent = msg;
+    t.className = "toast " + type + " show";
+    setTimeout(function(){ t.classList.remove("show"); }, 3500);
+  }
+
+  // Submit
+  document.getElementById("form").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    var city = document.getElementById("city").value;
+    if (!city) { toast("⚠️ ກະລຸນາເລືອກເມືອງ","err"); return; }
+
+    var nets = [];
+    document.querySelectorAll("#netPills input:checked").forEach(function(i){ nets.push(i.value); });
+    if (!nets.length) { toast("⚠️ ກະລຸນາເລືອກເຄືອຂ່າຍ","err"); return; }
+
+    var res = document.querySelector("#resPills input:checked");
+    if (!res) { toast("⚠️ ກະລຸນາເລືອກຜົນປະຕິບັດ","err"); return; }
+
+    var btn = document.getElementById("subBtn");
+    var sp = document.getElementById("spin");
+    btn.disabled = true; sp.classList.add("on");
+
+    var payload = JSON.stringify({
+      city:    city,
+      name:    document.getElementById("name").value,
+      village: document.getElementById("village").value,
+      phone:   document.getElementById("phone").value,
+      lat:     document.getElementById("lat").value,
+      lng:     document.getElementById("lng").value,
+      user:    document.getElementById("user").value,
+      network: nets.join(", "),
+      result:  res.value,
+      expiry:  document.getElementById("expiry").value,
+      usage:   document.getElementById("usage").value,
+      note:    document.getElementById("note").value
+    });
+
+    fetch(API, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "text/plain" },
+      body: payload
+    })
+    .then(function() {
+      // no-cors ไม่มี response body — ถือว่าสำเร็จ
+      toast("✅ ບັນທຶກຂໍ້ມູນສຳເລັດ!", "ok");
+      document.getElementById("form").reset();
+      document.querySelectorAll(".pills label").forEach(function(l){ l.classList.remove("on"); });
+      document.getElementById("cityDisp").value = "";
+      document.getElementById("gpsInfo").textContent = "";
+      document.getElementById("gpsInfo").className = "gps-info";
+    })
+    .catch(function() {
+      toast("❌ ເກີດຂໍ້ຜິດພາດ ກະລຸນາລອງໃໝ່", "err");
+    })
+    .finally(function() {
+      btn.disabled = false;
+      sp.classList.remove("on");
+    });
+  });
+</script>
+</body>
+</html>
