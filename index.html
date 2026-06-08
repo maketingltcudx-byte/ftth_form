@@ -461,27 +461,30 @@
     var sp = document.getElementById("spin");
     btn.disabled = true; sp.classList.add("on");
 
-    fetch(API, {
-      method: "POST",
-      body: JSON.stringify({
-        city:    city,
-        name:    document.getElementById("name").value,
-        village: document.getElementById("village").value,
-        phone:   document.getElementById("phone").value,
-        lat:     document.getElementById("lat").value,
-        lng:     document.getElementById("lng").value,
-        user:    document.getElementById("user").value,
-        network: nets.join(", "),
-        result:  res.value,
-        expiry:  document.getElementById("expiry").value,
-        usage:   document.getElementById("usage").value,
-        note:    document.getElementById("note").value
-      })
-    })
-    .then(function(r){ return r.json(); })
-    .then(function(d){
+    // ใช้ JSONP แทน fetch เพื่อหลีกเลี่ยง CORS
+    var payload = {
+      city:    city,
+      name:    document.getElementById("name").value,
+      village: document.getElementById("village").value,
+      phone:   document.getElementById("phone").value,
+      lat:     document.getElementById("lat").value,
+      lng:     document.getElementById("lng").value,
+      user:    document.getElementById("user").value,
+      network: nets.join(", "),
+      result:  res.value,
+      expiry:  document.getElementById("expiry").value,
+      usage:   document.getElementById("usage").value,
+      note:    document.getElementById("note").value
+    };
+
+    var cbName = "cb_" + Date.now();
+    window[cbName] = function(d) {
+      delete window[cbName];
+      document.body.removeChild(script);
+      btn.disabled = false;
+      sp.classList.remove("on");
       if (d.status === "success") {
-        toast("✅ ບັນທຶກຂໍ້ມູນສຳເລັດ!","ok");
+        toast("✅ ບັນທຶກຂໍ້ມູນສຳເລັດ!", "ok");
         document.getElementById("form").reset();
         document.querySelectorAll(".pills label").forEach(function(l){ l.classList.remove("on"); });
         document.getElementById("cityDisp").value = "";
@@ -490,9 +493,18 @@
       } else {
         toast("❌ " + d.message, "err");
       }
-    })
-    .catch(function(){ toast("❌ ເກີດຂໍ້ຜິດພາດ ກະລຸນາລອງໃໝ່","err"); })
-    .finally(function(){ btn.disabled = false; sp.classList.remove("on"); });
+    };
+
+    var script = document.createElement("script");
+    script.src = API + "?callback=" + cbName + "&data=" + encodeURIComponent(JSON.stringify(payload));
+    script.onerror = function() {
+      delete window[cbName];
+      document.body.removeChild(script);
+      btn.disabled = false;
+      sp.classList.remove("on");
+      toast("❌ ເກີດຂໍ້ຜິດພາດ ກະລຸນາລອງໃໝ່", "err");
+    };
+    document.body.appendChild(script);
   });
 </script>
 </body>
